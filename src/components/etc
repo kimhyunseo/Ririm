@@ -1,0 +1,33 @@
+1. 상태 선언 및 함수 정의
+
+// 장바구니 상태 선언 (여러 상품을 배열로 저장)
+const [cart, setCart] = useState([]);
+
+// 장바구니에 상품을 추가하는 함수
+// 이미 있는 상품이면 수량을 증가시키고, 없으면 새로 추가
+const handleAddCart = (product, count) => {
+  setCart((prev) => {
+    const existing = prev.find((item) => item.id === product.id); // 기존 상품 찾기
+    if (existing) {
+      // 기존 상품이면 수량만 증가
+      return prev.map((item) =>
+        item.id === product.id ? { ...item, count: item.count + count } : item
+      );
+    }
+    // 없던 상품이면 새로 추가
+    return [...prev, { ...product, count }];
+  });
+};
+
+
+// 2. 함수 전달 (부모 → 자식 컴포넌트)
+
+// 자식 컴포넌트에 장바구니 추가 함수 전달
+<ChildComponent onAddCart={handleAddCart} />
+
+
+// 3. 자식 컴포넌트에서 버튼 이벤트 처리
+
+// '장바구니 담기' 버튼 클릭 시 부모로부터 전달받은 함수 호출
+// 해당 상품과 수량을 인자로 넘겨 장바구니에 추가
+<button onClick={() => onAddCart(product, count)}>장바구니 담기</button>
